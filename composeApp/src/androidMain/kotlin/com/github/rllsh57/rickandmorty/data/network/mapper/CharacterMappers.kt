@@ -10,6 +10,7 @@ fun List<CharacterResponse>.toModelList(): List<CharacterModel> {
 fun CharacterResponse.toModel(): CharacterModel {
     return CharacterModel(
         id = id,
-        name = name
+        name = name,
+        image = image
     )
 }

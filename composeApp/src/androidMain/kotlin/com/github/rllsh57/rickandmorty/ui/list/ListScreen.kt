@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.github.rllsh57.rickandmorty.domain.model.CharacterModel
 import com.github.rllsh57.rickandmorty.ui.common.Loading
 import com.github.rllsh57.rickandmorty.ui.common.TopBar
@@ -25,9 +27,10 @@ fun ListScreen() {
         Column {
             when (state) {
                 is ListState.Result -> ListResult(
-                    result =state.result,
+                    result = state.result,
                     contentPadding = contentPadding
                 )
+
                 is ListState.Initial -> ListEmpty()
                 is ListState.Loading -> Loading()
                 is ListState.Error -> ListError(
@@ -72,6 +75,7 @@ fun ListResult(
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CharacterItem(item: CharacterModel) {
     Row(
@@ -81,6 +85,13 @@ fun CharacterItem(item: CharacterModel) {
             .height(50.dp)
             .fillMaxWidth()
     ) {
+        GlideImage(
+            model = item.image,
+            contentDescription = item.name,
+            modifier = Modifier
+                .size(50.dp)
+                .padding(horizontal = 6.dp, vertical = 2.dp)
+        )
         Text(
             text = item.name
         )

@@ -41,6 +41,7 @@ kotlin {
             implementation(libs.retrofit.converterGson)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.napier)
+            implementation(libs.glide.compose)
         }
     }
 }

@@ -12,7 +12,8 @@ data class CharacterPageResponse(
 @Serializable
 data class CharacterResponse(
     @SerialName("id") val id: Int,
-    @SerialName("name") val name: String
+    @SerialName("name") val name: String,
+    @SerialName("image") val image: String
 )
 
 @Serializable
