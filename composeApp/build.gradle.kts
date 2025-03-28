@@ -29,7 +29,13 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)        }
+            implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.retrofit)
+            implementation(libs.retrofit.kotlinxSerializationConverter)
+            implementation(libs.retrofit.kotlinCoroutinesAdapter)
+            implementation(libs.retrofit.loggingInterceptor)
+            implementation(libs.retrofit.converterGson)
+        }
     }
 }
 

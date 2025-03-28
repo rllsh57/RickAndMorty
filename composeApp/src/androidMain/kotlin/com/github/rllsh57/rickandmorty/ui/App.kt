@@ -1,4 +1,4 @@
-package com.github.rllsh57.rickandmorty
+package com.github.rllsh57.rickandmorty.ui
 
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
