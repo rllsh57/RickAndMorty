@@ -46,6 +46,12 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.glide.compose)
         }
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlin.coroutines.test)
+            implementation(libs.kotlin.test.junit)
+            implementation(libs.mockito)
+        }
     }
 }
 

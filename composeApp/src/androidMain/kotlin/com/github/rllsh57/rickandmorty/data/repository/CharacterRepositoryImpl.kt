@@ -37,7 +37,7 @@ class CharacterRepositoryImpl @Inject constructor(
     }
 
     private suspend fun fetchDatabase(): PagedListModel<CharacterModel> {
-        val result = dao.getCountries()
+        val result = dao.getCharacters()
         return PagedListModel(
             result.toModelList(),
             result.size
@@ -46,6 +46,6 @@ class CharacterRepositoryImpl @Inject constructor(
 
     private suspend fun updateDatabase(items: List<CharacterModel>) {
         val items = items.toEntityList()
-        dao.updateCountries(items)
+        dao.updateCharacters(items)
     }
 }

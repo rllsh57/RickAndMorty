@@ -10,8 +10,8 @@ import com.github.rllsh57.rickandmorty.data.database.entity.CharacterEntity
 interface CharacterDao {
 
     @Query("SELECT * FROM characters")
-    suspend fun getCountries(): List<CharacterEntity>
+    suspend fun getCharacters(): List<CharacterEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun updateCountries(countries: List<CharacterEntity>)
+    suspend fun updateCharacters(countries: List<CharacterEntity>)
 }
