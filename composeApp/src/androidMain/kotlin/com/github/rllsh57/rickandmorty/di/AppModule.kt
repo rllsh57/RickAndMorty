@@ -1,6 +1,8 @@
 package com.github.rllsh57.rickandmorty.di
 
 import com.github.rllsh57.rickandmorty.data.network.api.CharacterApi
+import com.github.rllsh57.rickandmorty.data.repository.CharacterRepositoryImpl
+import com.github.rllsh57.rickandmorty.domain.repository.CharacterRepository
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.*
@@ -46,6 +48,10 @@ class AppModule {
     @Singleton
     @Provides
     fun provideCharactersApi(retrofit: Retrofit): CharacterApi = retrofit.create(CharacterApi::class.java)
+
+    @Singleton
+    @Provides
+    fun bindCharactersRepository(repository: CharacterRepositoryImpl): CharacterRepository = repository
 
     companion object {
         const val BASE_URL = "https://rickandmortyapi.com/api/"

@@ -1,9 +1,8 @@
 package com.github.rllsh57.rickandmorty.ui.list
 
 import androidx.lifecycle.*
-import com.github.rllsh57.rickandmorty.data.network.api.CharacterApi
-import com.github.rllsh57.rickandmorty.data.network.mapper.toModelList
 import com.github.rllsh57.rickandmorty.domain.model.CharacterModel
+import com.github.rllsh57.rickandmorty.domain.usecase.FetchCharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.*
@@ -12,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ListViewModel @Inject constructor(
-    private val characterApi: CharacterApi
+    private val fetchCharactersUseCase: FetchCharactersUseCase
 ) : ViewModel() {
 
     val state = MutableStateFlow<ListState>(ListState.Initial)
@@ -23,8 +22,8 @@ class ListViewModel @Inject constructor(
 
     fun fetchCharacters() {
         viewModelScope.launchLoading {
-            val result = characterApi.getCharacters()
-            ListState.Result(result.results.toModelList())
+            val result = fetchCharactersUseCase.execute()
+            ListState.Result(result)
         }
     }
 
