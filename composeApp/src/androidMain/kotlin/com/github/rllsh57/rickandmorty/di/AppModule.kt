@@ -1,5 +1,9 @@
 package com.github.rllsh57.rickandmorty.di
 
+import android.content.Context
+import androidx.room.Room
+import com.github.rllsh57.rickandmorty.data.database.CharacterDatabase
+import com.github.rllsh57.rickandmorty.data.database.dao.CharacterDao
 import com.github.rllsh57.rickandmorty.data.network.api.CharacterApi
 import com.github.rllsh57.rickandmorty.data.repository.CharacterRepositoryImpl
 import com.github.rllsh57.rickandmorty.domain.repository.CharacterRepository
@@ -7,6 +11,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.*
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.github.aakira.napier.*
 import kotlinx.serialization.json.Json
@@ -48,6 +53,16 @@ class AppModule {
     @Singleton
     @Provides
     fun provideCharactersApi(retrofit: Retrofit): CharacterApi = retrofit.create(CharacterApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideRoomDatabase(@ApplicationContext context: Context): CharacterDatabase = Room
+        .databaseBuilder(context, CharacterDatabase::class.java, "characters_db")
+        .build()
+
+    @Singleton
+    @Provides
+    fun provideCountriesDao(database: CharacterDatabase): CharacterDao = database.characterDao()
 
     @Singleton
     @Provides

@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlinxSerialization)
     alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidxRoom)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.daggerHiltAndroid)
@@ -31,6 +32,7 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.androidx.room.ktx)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.hilt.navigation.compose)
@@ -74,6 +76,10 @@ android {
     }
     dependencies {
         configurations["ksp"](libs.dagger.hilt.compiler)
+        configurations["ksp"](libs.androidx.room.compiler)
+    }
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 }
 
