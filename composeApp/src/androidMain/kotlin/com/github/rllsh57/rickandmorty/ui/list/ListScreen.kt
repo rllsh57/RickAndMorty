@@ -1,7 +1,9 @@
 package com.github.rllsh57.rickandmorty.ui.list
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -12,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.github.rllsh57.rickandmorty.domain.model.CharacterModel
+import com.github.rllsh57.rickandmorty.domain.model.PagedListModel
 import com.github.rllsh57.rickandmorty.ui.common.Loading
 import com.github.rllsh57.rickandmorty.ui.common.TopBar
 
@@ -28,6 +31,7 @@ fun ListScreen() {
             when (state) {
                 is ListState.Result -> ListResult(
                     result = state.result,
+                    onLoadNextPage = { viewModel.fetchCharacters(it) },
                     contentPadding = contentPadding
                 )
 
@@ -56,20 +60,31 @@ fun ListError(error: Throwable) {
 
 @Composable
 fun ListResult(
-    result: List<CharacterModel>,
+    result: PagedListModel<CharacterModel>,
+    onLoadNextPage: (pagedList: PagedListModel<CharacterModel>) -> Unit,
     contentPadding: PaddingValues
 ) {
     Column {
+        val loadedSize = result.items.size
+        val totalSize = if (result.totalSize != Int.MAX_VALUE) result.totalSize else "?"
         Text(
-            text = "Items total number: ${result.size}",
+            "Loaded number: $loadedSize, Total number: $totalSize",
             modifier = Modifier.padding(horizontal = 8.dp)
         )
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = contentPadding
         ) {
-            items(result) { item ->
-                CharacterItem(item)
+            val count = if (result.items.size < result.totalSize) result.items.size + 1 else result.items.size
+            items(count) { index ->
+                if (index == result.items.size) {
+                    ListLoading()
+                    LaunchedEffect(result) {
+                        onLoadNextPage(result)
+                    }
+                } else {
+                    CharacterItem(result.items[index])
+                }
             }
         }
     }
@@ -95,5 +110,17 @@ fun CharacterItem(item: CharacterModel) {
         Text(
             text = item.name
         )
+    }
+}
+
+@Composable
+fun ListLoading() {
+    Box(
+        modifier = Modifier
+            .height(50.dp)
+            .fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }

@@ -2,6 +2,7 @@ package com.github.rllsh57.rickandmorty.ui.list
 
 import androidx.lifecycle.*
 import com.github.rllsh57.rickandmorty.domain.model.CharacterModel
+import com.github.rllsh57.rickandmorty.domain.model.PagedListModel
 import com.github.rllsh57.rickandmorty.domain.usecase.FetchCharactersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.aakira.napier.Napier
@@ -17,12 +18,13 @@ class ListViewModel @Inject constructor(
     val state = MutableStateFlow<ListState>(ListState.Initial)
 
     init {
+        state.value = ListState.Loading
         fetchCharacters()
     }
 
-    fun fetchCharacters() {
+    fun fetchCharacters(pagedList: PagedListModel<CharacterModel> = PagedListModel()) {
         viewModelScope.launchLoading {
-            val result = fetchCharactersUseCase.execute()
+            val result = fetchCharactersUseCase.execute(pagedList)
             ListState.Result(result)
         }
     }
@@ -30,7 +32,6 @@ class ListViewModel @Inject constructor(
     fun <T: ListState> CoroutineScope.launchLoading(block: suspend () -> T) {
         launch(Dispatchers.Main) {
             withContext(Dispatchers.IO) {
-                state.value = ListState.Loading
                 try {
                     state.value = block()
                 } catch (error: Exception) {
@@ -45,6 +46,6 @@ class ListViewModel @Inject constructor(
 sealed class ListState {
     data object Initial : ListState()
     data object Loading : ListState()
-    data class Result(val result: List<CharacterModel>) : ListState()
+    data class Result(val result: PagedListModel<CharacterModel>) : ListState()
     data class Error(val error: Throwable) : ListState()
 }
