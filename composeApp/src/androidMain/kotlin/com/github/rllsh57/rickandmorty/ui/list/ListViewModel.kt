@@ -18,14 +18,14 @@ class ListViewModel @Inject constructor(
     val state = MutableStateFlow<ListState>(ListState.Initial)
 
     init {
-        state.value = ListState.Loading
         fetchCharacters()
     }
 
     fun fetchCharacters(pagedList: PagedListModel<CharacterModel> = PagedListModel()) {
+        state.value = ListState.Result(pagedList, true)
         viewModelScope.launchLoading {
             val result = fetchCharactersUseCase.execute(pagedList)
-            ListState.Result(result)
+            ListState.Result(result, false)
         }
     }
 
@@ -46,6 +46,6 @@ class ListViewModel @Inject constructor(
 sealed class ListState {
     data object Initial : ListState()
     data object Loading : ListState()
-    data class Result(val result: PagedListModel<CharacterModel>) : ListState()
+    data class Result(val result: PagedListModel<CharacterModel>, val loading: Boolean) : ListState()
     data class Error(val error: Throwable) : ListState()
 }

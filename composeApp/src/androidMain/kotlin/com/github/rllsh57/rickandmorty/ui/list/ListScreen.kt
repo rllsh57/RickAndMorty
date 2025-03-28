@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.Modifier
@@ -31,7 +33,9 @@ fun ListScreen() {
             when (state) {
                 is ListState.Result -> ListResult(
                     result = state.result,
+                    state.loading,
                     onLoadNextPage = { viewModel.fetchCharacters(it) },
+                    onRefresh = { viewModel.fetchCharacters() },
                     contentPadding = contentPadding
                 )
 
@@ -58,32 +62,42 @@ fun ListError(error: Throwable) {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListResult(
     result: PagedListModel<CharacterModel>,
+    loading: Boolean,
     onLoadNextPage: (pagedList: PagedListModel<CharacterModel>) -> Unit,
+    onRefresh: () -> Unit,
     contentPadding: PaddingValues
 ) {
-    Column {
-        val loadedSize = result.items.size
-        val totalSize = if (result.totalSize != Int.MAX_VALUE) result.totalSize else "?"
-        Text(
-            "Loaded number: $loadedSize, Total number: $totalSize",
-            modifier = Modifier.padding(horizontal = 8.dp)
-        )
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = contentPadding
-        ) {
-            val count = if (result.items.size < result.totalSize) result.items.size + 1 else result.items.size
-            items(count) { index ->
-                if (index == result.items.size) {
-                    ListLoading()
-                    LaunchedEffect(result) {
-                        onLoadNextPage(result)
+    PullToRefreshBox(
+        isRefreshing = loading,
+        onRefresh = onRefresh,
+        modifier = Modifier
+    ) {
+        Column {
+            val loadedSize = result.items.size
+            val totalSize = if (result.totalSize != Int.MAX_VALUE) result.totalSize else "?"
+            Text(
+                "Loaded number: $loadedSize, Total number: $totalSize",
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = contentPadding
+            ) {
+                val count =
+                    if (result.items.size < result.totalSize) result.items.size + 1 else result.items.size
+                items(count) { index ->
+                    if (index == result.items.size) {
+                        ListLoading()
+                        LaunchedEffect(result) {
+                            onLoadNextPage(result)
+                        }
+                    } else {
+                        CharacterItem(result.items[index])
                     }
-                } else {
-                    CharacterItem(result.items[index])
                 }
             }
         }
@@ -118,9 +132,6 @@ fun ListLoading() {
     Box(
         modifier = Modifier
             .height(50.dp)
-            .fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
+            .fillMaxWidth()
+    )
 }
