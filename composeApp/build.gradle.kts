@@ -1,12 +1,14 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.kotlinxSerialization)
+    alias(libs.plugins.devtoolsKsp)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.daggerHiltAndroid)
 }
 
 kotlin {
@@ -30,11 +32,15 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.androidx.hilt.navigation.compose)
+            implementation(libs.dagger.hilt.android)
             implementation(libs.retrofit)
             implementation(libs.retrofit.kotlinxSerializationConverter)
             implementation(libs.retrofit.kotlinCoroutinesAdapter)
             implementation(libs.retrofit.loggingInterceptor)
             implementation(libs.retrofit.converterGson)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.napier)
         }
     }
 }
@@ -63,6 +69,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    dependencies {
+        configurations["ksp"](libs.dagger.hilt.compiler)
     }
 }
 
