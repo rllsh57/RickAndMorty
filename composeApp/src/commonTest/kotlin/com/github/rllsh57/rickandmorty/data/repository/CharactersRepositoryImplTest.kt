@@ -24,7 +24,7 @@ class CharacterRepositoryImplTest {
     fun `when fetchCharacters() - given api error - then fetch data using dao`() = runTest {
         val entities = createEntityList()
 
-        whenever(api.getCharacters(0)).thenThrow(RuntimeException())
+        whenever(api.getCharacters(1)).thenThrow(RuntimeException())
         whenever(dao.getCount()).thenReturn(1)
         whenever(dao.getCharacters(0, 20)).thenReturn(entities)
 
@@ -39,7 +39,7 @@ class CharacterRepositoryImplTest {
     @Test
     fun `when fetchCharacters() - given api success - then update data using dao`() = runTest {
         val response = createResponse()
-        whenever(api.getCharacters(0)).thenReturn(response)
+        whenever(api.getCharacters(1)).thenReturn(response)
 
         val result = repository.fetchCharacters(0, 20)
 

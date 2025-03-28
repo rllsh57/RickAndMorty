@@ -32,7 +32,7 @@ class CharacterRepositoryImpl @Inject constructor(
      * seems like api don't support @limit parameter, but could be supported
      */
     private suspend fun fetchNetwork(page: Int, limit: Int): PagedListModel<CharacterModel> {
-        val response = api.getCharacters(page)
+        val response = api.getCharacters(page + 1)
         return response.toPagedListModel()
     }
 
