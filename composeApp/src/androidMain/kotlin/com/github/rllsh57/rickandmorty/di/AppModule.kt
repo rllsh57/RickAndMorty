@@ -62,7 +62,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideCountriesDao(database: CharacterDatabase): CharacterDao = database.characterDao()
+    fun provideCharactersDao(database: CharacterDatabase): CharacterDao = database.characterDao()
 
     @Singleton
     @Provides

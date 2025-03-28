@@ -23,8 +23,8 @@ class CharacterRepositoryImpl @Inject constructor(
             }
             items
         } catch (e: Exception) {
-            Napier.e("fetchCountries failed", e)
-            fetchDatabase()
+            Napier.e("fetchCharacters failed", e)
+            fetchDatabase(page, limit)
         }
     }
 
@@ -36,11 +36,12 @@ class CharacterRepositoryImpl @Inject constructor(
         return response.toPagedListModel()
     }
 
-    private suspend fun fetchDatabase(): PagedListModel<CharacterModel> {
-        val result = dao.getCharacters()
+    private suspend fun fetchDatabase(page: Int, limit: Int): PagedListModel<CharacterModel> {
+        val count = dao.getCount()
+        val result = dao.getCharacters(page * limit, limit)
         return PagedListModel(
             result.toModelList(),
-            result.size
+            count
         )
     }
 
